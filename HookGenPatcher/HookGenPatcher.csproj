@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Version>1.0.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <RestoreAdditionalProjectSources>
+      https://api.nuget.org/v3/index.json;
+      https://nuget.bepinex.dev/v3/index.json
+    </RestoreAdditionalProjectSources>
+    <RootNamespace>BepInEx.MonoMod.HookGenPatcher.IL2CPP</RootNamespace>
+    <AssemblyName>BepInEx.MonoMod.HookGenPatcher.IL2CPP</AssemblyName>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Authors>chendrak</Authors>
+    <IsPackable>false</IsPackable>
+    <PackageId>HookGenPatcher</PackageId>
+    <Nullable>enable</Nullable>
+    <Product>BepInEx.MonoMod.HookGenPatcher.IL2CPP</Product>
+    <Description>MMHOOK generation at runtime for IL2CPP games</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Preloader.Core" Version="6.0.0-be.*" />
+    <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="2.1.0" />
+    <PackageReference Include="MonoMod.RuntimeDetour.HookGen" Version="22.5.1.1" />
+  </ItemGroup>
+  
+  <Target Name="PostPublishCleanup" AfterTargets="Publish" Condition="'$(Configuration)' == 'Release'">
+    <ItemGroup>
+      <FilesToDelete Include="$(PublishDir)*.dll" Exclude="$(PublishDir)$(TargetName)*.dll" />
+      <FilesToDelete Include="$(PublishDir)*.pdb" />
+      <FilesToDelete Include="$(PublishDir)*.deps.json" />
+    </ItemGroup>
+    <Message Text="Deleting references and debug symbols from publish output" Importance="high" />
+    <Delete Files="@(FilesToDelete)" />
+  </Target>
+</Project>

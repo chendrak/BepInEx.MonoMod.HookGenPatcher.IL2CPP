@@ -1,0 +1,46 @@
+name: Build release zips
+
+on:
+  pull_request:
+    branches: [ "master" ]  
+  push:
+    branches: [ "master" ]
+    tags:
+      - '*'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        configuration: [ "Debug", "Release" ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+      - name: Pull Cached NuGet Restore Data
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: "Build configuration: ${{ matrix.configuration }}"
+        run: dotnet build -c ${{ matrix.configuration }} --no-restore --nologo
+      - name: "Publish configuration: ${{ matrix.configuration }}"
+        run: dotnet publish -c ${{ matrix.configuration }} --no-build --nologo -o publish_output
+      - name: "Zip binaries for configuration: ${{ matrix.configuration }}"
+        run: pushd publish_output && zip ../EasyCards-${{ matrix.configuration }}-${{github.run_number}}.zip -r ./; popd
+      - name: Upload EasyCards-${{ matrix.configuration }}-${{github.run_number}}.zip
+        uses: actions/upload-artifact@v3
+        with:
+          name: EasyCards-${{ matrix.configuration }}-${{github.run_number}}.zip
+          path: EasyCards-${{ matrix.configuration }}-${{github.run_number}}.zip
+        
+        
