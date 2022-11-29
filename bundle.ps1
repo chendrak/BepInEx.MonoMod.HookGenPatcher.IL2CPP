@@ -18,4 +18,4 @@ $manifest | ConvertTo-Json | Out-File ".\Thunderstore\manifest.json"
 Copy-Item -Path ".\HookGenPatcher\bin\Release\net6.0\*.dll" -Destination ".\Thunderstore\BepInEx\patchers\Bepinex.MonoMod.HookGenPatcher.IL2CPP"
 #Copy-Item -Path ".\HookGenPatcher\bin\Release\net6.0\win-x64\*.exe" -Destination ".\Thunderstore\BepInEx\patchers\Bepinex.MonoMod.HookGenPatcher.IL2CPP"
 #Copy-Item -Path ".\HookGenPatcher\bin\Release\net6.0\win-x64\*.xml" -Destination ".\Thunderstore\BepInEx\patchers\Bepinex.MonoMod.HookGenPatcher.IL2CPP"
-Compress-Archive -Path ".\Thunderstore\*" -CompressionLevel "Optimal" -DestinationPath ".\HookGenPatcher.IL2CPP-$modversion.zip" -Force
+Compress-Archive -Path ".\Thunderstore\*" -CompressionLevel "Optimal" -DestinationPath ".\HookGenPatcher_IL2CPP-$modversion.zip" -Force
